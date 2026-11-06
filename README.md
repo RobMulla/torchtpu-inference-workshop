@@ -27,7 +27,7 @@ demos:
 | [`demos/04_kernel/`](demos/04_kernel/) | Extra, not shown in the session: RMSNorm in plain PyTorch ops, then as a Pallas kernel called from PyTorch, both profiled | a TPU VM, one chip |
 | [`demos/setup/`](demos/setup/) | Install scripts for the three environments (TorchTPU; SGLang; vLLM), from the projects' own READMEs | |
 | [`notebooks/`](notebooks/) | The three demos on **one chip and a small model** (`Qwen/Qwen3-0.6B`), numbered like the demos, for Colab's TPU runtime or a single-chip VM; badges below | Colab |
-| `slides/` | The deck, after the session | |
+| [`slides/`](slides/) | The deck as a PDF (one page per slide, as shown) | |
 
 ## Notebooks
 
