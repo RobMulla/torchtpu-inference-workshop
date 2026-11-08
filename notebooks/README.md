@@ -10,7 +10,7 @@ pick the TPU runtime.
 
 | Notebook | Open | Demo, part | What it does |
 | --- | --- | --- | --- |
-| `01_torchtpu_one_chip.ipynb` | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/RobMulla/torchtpu-inference-workshop/blob/main/notebooks/01_torchtpu_one_chip.ipynb) | Demo 1; part 1, TorchTPU: the TPU is a PyTorch device | The device line, an MLP in eager mode and under `torch.compile`, both runs under the profiler and the two traces drawn side by side in the notebook (and how to open them in TensorBoard). Ends with a link to the TorchTPU docs' own Colab. |
+| `01_torchtpu_one_chip.ipynb` | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/RobMulla/torchtpu-inference-workshop/blob/main/notebooks/01_torchtpu_one_chip.ipynb) | Demo 1; part 1, TorchTPU: the TPU is a PyTorch device | The device line (`import torch` is enough), an MLP in eager mode, the same with DeferAndFuse (`torch.tpu.set_eager_mode`), the same under `torch.compile`; the three runs under the standard profiler and one step of each drawn on one axis in the notebook (and how to open them in TensorBoard). Ends with a link to the TorchTPU docs' own Colab. |
 | `02_sglang_torchtpu.ipynb` | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/RobMulla/torchtpu-inference-workshop/blob/main/notebooks/02_sglang_torchtpu.ipynb) | Demo 2; part 3, vLLM and SGLang on TorchTPU | Install SGLang-TorchTPU into a Python 3.12 environment of its own; `python -m sglang.launch_server --device tpu ... --enable-torch-compile --enable-cache-report` on one chip in the background; wait for `/health`; `tpu-info`; one request; a burst of sixteen with tokens/s; the prefix cache (one long prompt asked about twice, printing first-token time and cached tokens); stop. |
 | `03_vllm_torchtpu.ipynb` | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/RobMulla/torchtpu-inference-workshop/blob/main/notebooks/03_vllm_torchtpu.ipynb) | Demo 3; part 3, vLLM and SGLang on TorchTPU | The same shape with vLLM-TorchTPU: `vllm serve Qwen/Qwen3-0.6B ... --enable-prompt-tokens-details`, the same requests, the same prefix-cache cell; stop. |
 
@@ -19,6 +19,12 @@ v6e-1** (one Trillium chip, 32 GB HBM) with `jupyter nbconvert --execute`, from 
 3.13 kernel like Colab's (Nov 2); the clean, un-executed copies are what is committed.
 Colab's TPU runtime is a different chip, so timings and memory differ. Open points are
 listed at the end of this file.
+
+**What is in the markdown.** A few of the session's slides are embedded in the notebooks
+as cell attachments (the three modes and the three traces in `01`; the KV cache, paged
+attention and prefix caching in `02`; the two numbers, continuous batching and prefix
+caching in `03`), so a reader coming from the room finds the same pictures. The whole deck
+is `../slides/` (one PDF).
 
 ## Running them
 
@@ -35,6 +41,10 @@ listed at the end of this file.
   kernel holds the chip. On a TPU VM, the server's process group is what the stop cell
   signals; if a kernel dies with a server up, `pkill -INT -f
   "vllm.entrypoints|sglang.launch_server"` frees the chip.
+- `01` relies on TorchTPU's autoload (`import torch` registers the device; there is no
+  `import torch_tpu`, as in the live demo's scripts) and switches to DeferAndFuse with the
+  context manager `torch.tpu.set_eager_mode(torch.tpu.EagerMode.DEFER_AND_FUSE)`, the
+  in-process form of the live demo's `TORCH_TPU_DEFER_AND_FUSE=1`.
 - The install cells are idempotent and print versions: if the package or the environment
   is already there, nothing is installed. The lines are the engines' public README lines
   (Oct 26 heads): `pip install --extra-index-url https://download.pytorch.org/whl/cpu
@@ -71,7 +81,7 @@ the markdown says so; none is written down here.
   `SUPPORT_MATRIX.md`, `benchmark/tpu/common_env.sh`; the `tpu-v0.1.0` release wheels'
   metadata (Nov 2).
 - The live demos' own files, in `../demos/`: `01_one_chip/` (the examples and the
-  profiler scripts), `02_sglang/serve.sh` and `ask.py`, `03_vllm/serve.sh` and `burst.py`.
+  `profiler.py`), `02_sglang/serve.sh` and `ask.py`, `03_vllm/serve.sh` and `burst.py`.
 
 ## Open points
 

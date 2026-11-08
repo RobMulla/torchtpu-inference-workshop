@@ -21,7 +21,7 @@ demos:
 
 | Folder | What | Needs |
 |---|---|---|
-| [`demos/01_one_chip/`](demos/01_one_chip/) | Demo 1: one MLP, on the CPU, on the TPU in eager mode, and under `torch.compile`; the TPU runs again under the profiler for TensorBoard's trace viewer. Demo 1 also runs the same script with `TORCH_TPU_DEFER_AND_FUSE=1` (`profile_defer.py` profiles that run) | a TPU VM, one chip |
+| [`demos/01_one_chip/`](demos/01_one_chip/) | Demo 1: one MLP, on the CPU, on the TPU in eager mode (and the same file again with `TORCH_TPU_DEFER_AND_FUSE=1`), and under `torch.compile`; `profiler.py eager\|defer\|compiled` is the same model under the standard PyTorch profiler, for TensorBoard's trace viewer | a TPU VM, one chip |
 | [`demos/02_sglang/`](demos/02_sglang/) | Demo 2: SGLang serving Qwen3-32B across four chips; one long prompt asked about twice, showing the prefix cache | a TPU VM, four chips |
 | [`demos/03_vllm/`](demos/03_vllm/) | Demo 3: vLLM serving the same model the same way; one request, then sixty-four at once | a TPU VM, four chips |
 | [`demos/04_kernel/`](demos/04_kernel/) | Extra, not shown in the session: RMSNorm in plain PyTorch ops, then as a Pallas kernel called from PyTorch, both profiled | a TPU VM, one chip |
@@ -50,7 +50,7 @@ bash demos/setup/install_torchtpu.sh && source ~/venv-torchtpu/bin/activate
 cd demos/01_one_chip && python example1_eager.py
 TORCH_TPU_DEFER_AND_FUSE=1 python example1_eager.py        # the same script, DeferAndFuse on
 python example2_compile.py
-python profile_eager.py && python profile_defer.py && python profile_compile.py   # traces/ for TensorBoard
+for m in eager defer compiled; do python profiler.py $m; done   # traces/ for TensorBoard
 tensorboard --logdir traces --port 6006                   # Profile tab, Trace Viewer
 
 # Demo 2: SGLang on four chips (its own venv)

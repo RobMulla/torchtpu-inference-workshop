@@ -8,8 +8,9 @@ this file adds what is not obvious from the files themselves.
 
 - `demos/01_one_chip/`: demo 1, one MLP. `example0_cpu.py` (CPU), `example1_eager.py` (the
   TPU, eager; run it again with `TORCH_TPU_DEFER_AND_FUSE=1` for the optimized eager mode),
-  `example2_compile.py` (`torch.compile(backend="tpu")`). `profile_*.py` are the same runs
-  under `torch.profiler`, for TensorBoard's trace viewer. One chip.
+  `example2_compile.py` (`torch.compile(backend="tpu")`). `profiler.py eager|defer|compiled` is
+  the same model under the standard `torch.profiler` (with `ProfilerActivity.TPU`), writing
+  `traces/<mode>/` for TensorBoard's trace viewer. One chip.
 - `demos/02_sglang/`: demo 2. `serve.sh` starts SGLang with `--device tpu --tp-size 4`
   serving `Qwen/Qwen3-32B` on four chips; `ask.py` asks about one long prompt twice (the
   prefix cache). `ask.py` reads `transformer.py` from its own directory: PyTorch's
@@ -53,8 +54,8 @@ add; `example0_cpu.py` exists only to show the one-line difference.
 
 - The demo files are opened in vim on a narrow terminal pane during the session, next to a
   monitor. Keep `demos/01_one_chip/example*.py` at most 52 columns wide, `demos/04_kernel/*.py`
-  at most 72, `ask.py`, `burst.py` and the two `serve.sh` under 64; the profiler scripts and
-  `grid.py` are not shown and may use 88. Check with
+  at most 72, `ask.py`, `burst.py` and the two `serve.sh` under 64 (`profiler.py` is shown
+  too: 52); `grid.py` is not shown and may use 88. Check with
   `awk '{ if (length > m) m = length } END { print m }' <file>`.
 - Every number the scripts print is that run's own. Do not write timings, throughput or
   memory figures into the README, the notebooks' markdown or comments.
