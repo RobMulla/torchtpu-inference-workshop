@@ -16,7 +16,7 @@ pick the TPU runtime.
 
 **Where they were tested.** Every notebook was executed top to bottom on a **Cloud TPU
 v6e-1** (one Trillium chip, 32 GB HBM) with `jupyter nbconvert --execute`, from a Python
-3.13 kernel like Colab's (Nov 2); the clean, un-executed copies are what is committed.
+3.13 kernel like Colab's (Nov 8); the clean, un-executed copies are what is committed.
 Colab's TPU runtime is a different chip, so timings and memory differ. Open points are
 listed at the end of this file.
 
