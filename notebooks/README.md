@@ -45,6 +45,10 @@ is `../slides/` (one PDF).
   `import torch_tpu`, as in the live demo's scripts) and switches to DeferAndFuse with the
   context manager `torch.tpu.set_eager_mode(torch.tpu.EagerMode.DEFER_AND_FUSE)`, the
   in-process form of the live demo's `TORCH_TPU_DEFER_AND_FUSE=1`.
+- The serving notebooks' install lines pass `--index-strategy unsafe-best-match` to `uv`:
+  `uv` otherwise stops at the first index that has a package, the PyTorch CPU index has an
+  old `requests`, and `vllm-torchtpu` then resolves to the empty `0.0.0` placeholder (it
+  did, on Nov 8; the cell now also asserts the install is real).
 - The install cells are idempotent and print versions: if the package or the environment
   is already there, nothing is installed. The lines are the engines' public README lines
   (Oct 26 heads): `pip install --extra-index-url https://download.pytorch.org/whl/cpu
