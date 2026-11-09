@@ -21,7 +21,7 @@ demos:
 
 | Folder | What | Needs |
 |---|---|---|
-| [`demos/01_one_chip/`](demos/01_one_chip/) | Demo 1: one MLP, on the CPU, on the TPU in eager mode (and the same file again with `TORCH_TPU_DEFER_AND_FUSE=1`), and under `torch.compile`; `profiler.py eager\|defer\|compiled` is the same model under the standard PyTorch profiler, for TensorBoard's trace viewer | a TPU VM, one chip |
+| [`demos/01_one_chip/`](demos/01_one_chip/) | Demo 1: one MLP, on the CPU, on the TPU in eager mode (and the same file again with `TORCH_TPU_DEFER_AND_FUSE=1`), and under `torch.compile`; `profiler.py eager\|defer\|compiled` is the same model under the standard PyTorch profiler (`torch.profiler` with the TPU activity), viewed in XProf, the TPU profiler in TensorBoard | a TPU VM, one chip |
 | [`demos/02_sglang/`](demos/02_sglang/) | Demo 2: SGLang serving Qwen3-32B across four chips; one long prompt asked about twice, showing the prefix cache | a TPU VM, four chips |
 | [`demos/03_vllm/`](demos/03_vllm/) | Demo 3: vLLM serving the same model the same way; one request, then sixty-four at once | a TPU VM, four chips |
 | [`demos/04_kernel/`](demos/04_kernel/) | Extra, not shown in the session: RMSNorm in plain PyTorch ops, then as a Pallas kernel called from PyTorch, both profiled | a TPU VM, one chip |
@@ -31,9 +31,11 @@ demos:
 
 ## Notebooks
 
-Each opens in Colab from this repository (pick the TPU runtime); see
-[`notebooks/README.md`](notebooks/README.md) for how they run.
+Each opens in Colab from this repository (*Runtime → Change runtime type → TPU*); see
+[`notebooks/README.md`](notebooks/README.md) for how they run. If TPU runtimes are scarce,
+the first one does all three demos in one runtime.
 
+- All three demos, one runtime: [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/RobMulla/torchtpu-inference-workshop/blob/main/notebooks/00_all_three_demos.ipynb) [`notebooks/00_all_three_demos.ipynb`](notebooks/00_all_three_demos.ipynb)
 - Demo 1, TorchTPU on one chip: [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/RobMulla/torchtpu-inference-workshop/blob/main/notebooks/01_torchtpu_one_chip.ipynb) [`notebooks/01_torchtpu_one_chip.ipynb`](notebooks/01_torchtpu_one_chip.ipynb)
 - Demo 2, SGLang on TorchTPU: [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/RobMulla/torchtpu-inference-workshop/blob/main/notebooks/02_sglang_torchtpu.ipynb) [`notebooks/02_sglang_torchtpu.ipynb`](notebooks/02_sglang_torchtpu.ipynb)
 - Demo 3, vLLM on TorchTPU: [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/RobMulla/torchtpu-inference-workshop/blob/main/notebooks/03_vllm_torchtpu.ipynb) [`notebooks/03_vllm_torchtpu.ipynb`](notebooks/03_vllm_torchtpu.ipynb)
@@ -51,7 +53,7 @@ cd demos/01_one_chip && python example1_eager.py
 TORCH_TPU_DEFER_AND_FUSE=1 python example1_eager.py        # the same script, DeferAndFuse on
 python example2_compile.py
 for m in eager defer compiled; do python profiler.py $m; done   # traces/ for TensorBoard
-tensorboard --logdir traces --port 6006                   # Profile tab, Trace Viewer
+tensorboard --logdir traces --port 6006                   # Profile tab (XProf), Trace Viewer
 
 # Demo 2: SGLang on four chips (its own venv)
 bash demos/setup/install_sglang.sh && source ~/venv-sglang/bin/activate
